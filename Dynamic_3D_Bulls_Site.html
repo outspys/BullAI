@@ -1,0 +1,131 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic 3D Bulls Experience</title>
+    <style>
+        body, html {
+            margin: 0;
+            overflow: hidden;
+            height: 100%;
+            font-family: Arial, sans-serif;
+        }
+        #infoPanel {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+        #infoPanel p {
+            margin: 0;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div id="infoPanel">
+        <h2>Live Bull Tracker</h2>
+        <p>Market Cap: <span id="marketCap">$0</span></p>
+        <p>Current Terrain: <span id="terrain">Open Field</span></p>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.153.0/three.min.js"></script>
+    <script>
+        let scene, camera, renderer, bulls = [], marketCap = 0, terrain = 'Open Field';
+        const terrainCaps = [50000, 100000, 500000]; // Market caps for terrain changes
+        const terrains = ['Open Field', 'Desert', 'Mountain', 'Snowy Peaks'];
+
+        function init() {
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x87ceeb); // Sky blue
+
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 5;
+            camera.position.y = 1;
+
+            renderer = new THREE.WebGLRenderer();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            addTerrain();
+            addBulls();
+
+            window.addEventListener('resize', onWindowResize);
+            animate();
+        }
+
+        function addTerrain() {
+            const geometry = new THREE.PlaneGeometry(100, 100, 32, 32);
+            const material = new THREE.MeshBasicMaterial({ color: getTerrainColor(), side: THREE.DoubleSide });
+            const plane = new THREE.Mesh(geometry, material);
+            plane.rotation.x = Math.PI / 2;
+            scene.add(plane);
+        }
+
+        function addBulls() {
+            const bullGeometry = new THREE.BoxGeometry(0.5, 0.5, 1);
+            const bullMaterial = new THREE.MeshBasicMaterial({ color: 0x8b0000 });
+            for (let i = 0; i < 10; i++) {
+                const bull = new THREE.Mesh(bullGeometry, bullMaterial);
+                bull.position.set(Math.random() * 10 - 5, 0.25, Math.random() * 10 - 5);
+                bulls.push(bull);
+                scene.add(bull);
+            }
+        }
+
+        function getTerrainColor() {
+            switch (terrain) {
+                case 'Open Field': return 0x228B22; // Green
+                case 'Desert': return 0xEDC9AF; // Sandy
+                case 'Mountain': return 0x8B4513; // Brown
+                case 'Snowy Peaks': return 0xFFFFFF; // White
+                default: return 0x228B22;
+            }
+        }
+
+        function updateTerrain() {
+            const currentIndex = terrains.indexOf(terrain);
+            if (marketCap >= terrainCaps[currentIndex]) {
+                terrain = terrains[currentIndex + 1];
+                scene.children = scene.children.filter(obj => !(obj.geometry instanceof THREE.PlaneGeometry));
+                addTerrain();
+                document.getElementById('terrain').textContent = terrain;
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            bulls.forEach(bull => {
+                bull.position.x += Math.random() * 0.02 - 0.01;
+                bull.position.z += Math.random() * 0.02 - 0.01;
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // Simulate market cap changes
+        setInterval(() => {
+            marketCap += 1000;
+            document.getElementById('marketCap').textContent = `$${marketCap}`;
+            updateTerrain();
+        }, 3000);
+
+        init();
+    </script>
+</body>
+</html>
