@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Bull Zone</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #1e1f26, #2e3039);
+            color: white;
+            text-align: center;
+        }
+        header {
+            padding: 20px;
+            background: #242631;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        header p {
+            margin: 5px 0;
+            font-size: 1.2rem;
+        }
+        .bull-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px;
+            padding: 20px;
+        }
+        .bull {
+            width: 150px;
+            margin: 10px;
+            padding: 10px;
+            background: #343744;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+        .bull:hover {
+            transform: scale(1.1);
+        }
+        .bull img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        .bull p {
+            margin: 10px 0 0;
+            font-size: 1rem;
+        }
+        footer {
+            padding: 20px;
+            background: #242631;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to AI Bull Zone</h1>
+        <p>Where every coin adds a new AI Bull!</p>
+    </header>
+
+    <main>
+        <div class="bull-container" id="bullContainer">
+            <!-- Bulls will be dynamically added here -->
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 AI Bull Zone. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const bullContainer = document.getElementById('bullContainer');
+
+        // Simulating an initial number of AI Bulls
+        let aiBulls = 5; // Replace with your actual data-fetch logic
+
+        function generateBullElement(id) {
+            const bullDiv = document.createElement('div');
+            bullDiv.classList.add('bull');
+
+            const bullImg = document.createElement('img');
+            bullImg.src = `https://via.placeholder.com/100?text=Bull+${id}`;
+            bullImg.alt = `AI Bull ${id}`;
+
+            const bullText = document.createElement('p');
+            bullText.textContent = `AI Bull #${id}`;
+
+            bullDiv.appendChild(bullImg);
+            bullDiv.appendChild(bullText);
+
+            return bullDiv;
+        }
+
+        function renderBulls() {
+            bullContainer.innerHTML = '';
+            for (let i = 1; i <= aiBulls; i++) {
+                bullContainer.appendChild(generateBullElement(i));
+            }
+        }
+
+        // Simulating a user buying a coin to add a new AI Bull
+        function addNewBull() {
+            aiBulls++;
+            renderBulls();
+        }
+
+        // Initial render
+        renderBulls();
+
+        // Simulate a coin purchase event
+        setTimeout(() => {
+            alert('A coin was purchased! Adding a new AI Bull...');
+            addNewBull();
+        }, 5000);
+    </script>
+</body>
+</html>
