@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Bull Zone</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #1e1f26, #2e3039);
+            color: white;
+            text-align: center;
+            overflow: hidden; /* Prevent scrolling */
+        }
+        header {
+            padding: 20px;
+            background: #242631;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        header p {
+            margin: 5px 0;
+            font-size: 1.2rem;
+        }
+        canvas {
+            display: block;
+            margin: 0 auto;
+            background: linear-gradient(to top, #3a3b45, #242631);
+        }
+        footer {
+            padding: 20px;
+            background: #242631;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to AI Bull Zone</h1>
+        <p>Watch the AI Bulls roam freely!</p>
+    </header>
+
+    <canvas id="bullCanvas" width="800" height="600"></canvas>
+
+    <footer>
+        <p>&copy; 2024 AI Bull Zone. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('bullCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const bulls = [];
+        const bullCount = 10; // Number of bulls
+
+        class Bull {
+            constructor(x, y, dx, dy, size) {
+                this.x = x;
+                this.y = y;
+                this.dx = dx;
+                this.dy = dy;
+                this.size = size;
+                this.image = new Image();
+                this.image.src = 'https://via.placeholder.com/50?text=Bull';
+            }
+
+            draw() {
+                ctx.drawImage(this.image, this.x, this.y, this.size, this.size);
+            }
+
+            update() {
+                this.x += this.dx;
+                this.y += this.dy;
+
+                // Bounce off walls
+                if (this.x + this.size > canvas.width || this.x < 0) {
+                    this.dx *= -1;
+                }
+
+                if (this.y + this.size > canvas.height || this.y < 0) {
+                    this.dy *= -1;
+                }
+
+                this.draw();
+            }
+        }
+
+        function initBulls() {
+            for (let i = 0; i < bullCount; i++) {
+                const size = 50;
+                const x = Math.random() * (canvas.width - size);
+                const y = Math.random() * (canvas.height - size);
+                const dx = (Math.random() - 0.5) * 4;
+                const dy = (Math.random() - 0.5) * 4;
+                bulls.push(new Bull(x, y, dx, dy, size));
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            bulls.forEach(bull => bull.update());
+            requestAnimationFrame(animate);
+        }
+
+        initBulls();
+        animate();
+    </script>
+</body>
+</html>
